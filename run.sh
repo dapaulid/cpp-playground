@@ -12,4 +12,4 @@ EXEC_NAME=$(basename -- ${SRC_FILE%.*})
 EXEC_FILE="$OUTPUT_DIR/$EXEC_NAME"
 
 mkdir -p $OUTPUT_DIR
-g++ $SRC_FILE -std=c++11 -isystem libs/benchmark/include -Llibs/benchmark/build/src -lbenchmark -lpthread -o $EXEC_FILE && ./$EXEC_FILE
+g++ $SRC_FILE -std=c++11 -isystem libs/benchmark/include -Lbuild/libs/benchmark/src -lbenchmark -lpthread -o $EXEC_FILE && ./$EXEC_FILE
