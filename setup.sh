@@ -1,7 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash -e
 
-# exit on error
-set -e
+# color constants
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
 
 # function for setting up a single submodule/library
 setup_submodule() {
@@ -9,17 +12,21 @@ setup_submodule() {
 	cmake_args=${@:2}
 	echo
 	echo "================================================================================"
-	echo "> setting up $modname"
+	echo -e "> setting up ${YELLOW}$modname${NC}"
 	echo "================================================================================"
-	echo "[ git submodule ]"
+	echo -e "[ ${WHITE}git submodule${NC} ]"
 	git submodule update --init --recursive libs/$modname
 	git submodule status libs/$modname
-	echo "[ cmake ]"
+	echo -e "[ ${WHITE}configure${NC} ]"
 	cmake -S libs/$modname -B build/libs/$modname $cmake_args
-	echo "[ make ]"
-	make -C build/libs/$modname	
-	echo "[ done ]"
+	echo -e "[ ${WHITE}build${NC} ]"
+	cmake --build build/libs/$modname	
+	echo -e "[ ${GREEN}done${NC} ]"
 }
+
+# output some version info
+git --version
+cmake --version
 
 # do all submodules here
 setup_submodule "googletest"
