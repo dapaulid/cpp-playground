@@ -1,15 +1,2 @@
 #!/usr/bin/env bash
-SRC_FILE=$1
-OUTPUT_DIR="build"
-
-if [ -z "$SRC_FILE" ]
-then
-    echo "error: please input file (*.cpp)"
-	exit 1
-fi
-
-EXEC_NAME=$(basename -- ${SRC_FILE%.*})
-EXEC_FILE="$OUTPUT_DIR/$EXEC_NAME"
-
-mkdir -p $OUTPUT_DIR
-g++ $SRC_FILE -std=c++11 -isystem libs/benchmark/include -Lbuild/libs/benchmark/src -lbenchmark -lpthread -o $EXEC_FILE && ./$EXEC_FILE
+emrun --browser=chrome --hostname=localhost --kill_exit --browser_args="--headless --remote-debugging-port=0 --disable-gpu --disable-software-rasterizer" build/example.html

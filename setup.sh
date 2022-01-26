@@ -6,17 +6,24 @@ YELLOW='\033[1;33m'
 WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
-# function for setting up a single submodule/library
-setup_submodule() {
+EMSDK_VERSION='3.1.2' # check with ./emsdk list
+
+prepare_submodule() {
 	modname=$1
-	cmake_args=${@:2}
 	echo
 	echo "================================================================================"
 	echo -e "> setting up ${YELLOW}$modname${NC}"
 	echo "================================================================================"
 	echo -e "[ ${WHITE}git submodule${NC} ]"
 	git submodule update --init --recursive libs/$modname
-	git submodule status libs/$modname
+	git submodule status libs/$modname	
+}
+
+# function for setting up a single submodule/library
+cmake_submodule() {
+	modname=$1
+	cmake_args=${@:2}
+	prepare_submodule $modname
 	echo -e "[ ${WHITE}configure${NC} ]"
 	cmake -S libs/$modname -B build/libs/$modname $cmake_args
 	echo -e "[ ${WHITE}build${NC} ]"
@@ -29,8 +36,12 @@ git --version
 cmake --version
 
 # do all submodules here
-setup_submodule "googletest"
-setup_submodule "benchmark" "-DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_TESTING=OFF"
+cmake_submodule "googletest"
+cmake_submodule "benchmark" "-DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_TESTING=OFF"
+
+prepare_submodule "emsdk"
+echo -e "[ ${WHITE}configure${NC} ]"
+libs/emsdk/emsdk install $EMSDK_VERSION
 
 # done
 echo

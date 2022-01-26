@@ -19,5 +19,6 @@ fi
 EXEC_NAME=$(basename -- ${SRC_FILE%.*})
 EXEC_FILE="$OUTPUT_DIR/$EXEC_NAME"
 
-cmake -S . -B build -DMY_SRC_FILE=$SRC_FILE -DMY_EXEC_NAME=$EXEC_NAME
-cmake --build build --config Release
+emcmake cmake -S . -B build -DMY_SRC_FILE=$SRC_FILE -DMY_EXEC_NAME=$EXEC_NAME #-DCMAKE_EXECUTABLE_SUFFIX=.html
+emmake make -C build
+#libs/emsdk/upstream/emscripten/emcmake cmake --build build --config Release
