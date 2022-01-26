@@ -4,3 +4,6 @@
 [submodule "libs/benchmark"]
 	path = libs/benchmark
 	url = https://github.com/google/benchmark.git
+[submodule "libs/emsdk"]
+	path = libs/emsdk
+	url = https://github.com/emscripten-core/emsdk.git
