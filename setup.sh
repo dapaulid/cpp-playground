@@ -40,8 +40,12 @@ cmake_submodule "googletest"
 cmake_submodule "benchmark" "-DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_TESTING=OFF"
 
 prepare_submodule "emsdk"
-echo -e "[ ${WHITE}configure${NC} ]"
+echo -e "[ ${WHITE}install${NC} ]"
 libs/emsdk/emsdk install $EMSDK_VERSION
+source libs/emsdk/emsdk_env.sh
+echo -e "[ ${WHITE}check${NC} ]"
+libs/emsdk/upstream/emscripten/em++ --check
+echo -e "[ ${GREEN}done${NC} ]"
 
 # done
 echo
