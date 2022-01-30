@@ -42,6 +42,7 @@ cmake_submodule "benchmark" "-DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_TESTI
 prepare_submodule "emsdk"
 echo -e "[ ${WHITE}install${NC} ]"
 libs/emsdk/emsdk install $EMSDK_VERSION
+libs/emsdk/emsdk activate $EMSDK_VERSION
 source libs/emsdk/emsdk_env.sh
 echo -e "[ ${WHITE}check${NC} ]"
 libs/emsdk/upstream/emscripten/em++ --check
