@@ -1,8 +1,6 @@
-#include <thread>
-#include <unordered_map>
 #include <string>
 
-struct SStaticData;
+
 class ThreadInfo {
 
 public:
@@ -15,6 +13,7 @@ private:
 	std::string m_name;
 
 private:
-
+	// static members as implementation detail
+	struct SStaticData;
 	static SStaticData& sdata();
 };

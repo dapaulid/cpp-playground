@@ -1,26 +1,31 @@
 #include "threadinfo.h"
 
+#include <thread>
+#include <mutex>
+#include <unordered_map>
 #include <sstream>
 #include <iomanip>
 
 
-typedef std::unordered_map<std::thread::id, ThreadInfo> TThreadMap;
-
 // private static data
-struct SStaticData {
-	TThreadMap map;
+struct ThreadInfo::SStaticData {
+	std::unordered_map<std::thread::id, ThreadInfo> map;
 	unsigned int threadnum;
+	std::mutex mutex;
 };
 	
-SStaticData& ThreadInfo::sdata()
+ThreadInfo::SStaticData& ThreadInfo::sdata()
 {
-static SStaticData s_instance;
+	static ThreadInfo::SStaticData s_instance;
 	return s_instance;
 }
 
 ThreadInfo& ThreadInfo::current()
 {
 	std::thread::id tid = std::this_thread::get_id();
+
+	// critical section
+	std::lock_guard<std::mutex> lock(sdata().mutex);
 
 	auto it = sdata().map.find(tid);
 	if (it == sdata().map.end()) {
@@ -31,8 +36,7 @@ ThreadInfo& ThreadInfo::current()
 		//ss << tid;
 		ss << "T" << std::setw(3) << std::setfill('0') << sdata().threadnum++;
 		info.m_name = ss.str();
-		//thread_num = (int)map.size();
-		it = sdata().map.insert(TThreadMap::value_type(tid, info)).first;
+		it = sdata().map.insert({tid, info}).first;
 	}
 
 	return it->second;
