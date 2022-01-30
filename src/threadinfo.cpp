@@ -2,44 +2,27 @@
 
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include <unordered_map>
 #include <sstream>
 #include <iomanip>
 
-
-// private static data
-struct ThreadInfo::SStaticData {
-	std::unordered_map<std::thread::id, ThreadInfo> map;
-	unsigned int threadnum;
-	std::mutex mutex;
-};
-	
-ThreadInfo::SStaticData& ThreadInfo::sdata()
+ThreadInfo::ThreadInfo()
 {
-	static ThreadInfo::SStaticData s_instance;
-	return s_instance;
+	// use monotonic counter for thread number
+	static std::atomic_uint s_thread_num;
+	m_number = s_thread_num++;
+
+	// use thread number for default name
+	std::stringstream ss;
+	ss << "T" << std::setfill('0') << std::setw(3) << m_number;
+	m_name = ss.str();
 }
 
-ThreadInfo& ThreadInfo::current()
+ThreadInfo::~ThreadInfo()
 {
-	std::thread::id tid = std::this_thread::get_id();
-
-	// critical section
-	std::lock_guard<std::mutex> lock(sdata().mutex);
-
-	auto it = sdata().map.find(tid);
-	if (it == sdata().map.end()) {
-		// unknown thread -> create new entry
-		ThreadInfo info;
-
-		std::stringstream ss;
-		//ss << tid;
-		ss << "T" << std::setw(3) << std::setfill('0') << sdata().threadnum++;
-		info.m_name = ss.str();
-		it = sdata().map.insert({tid, info}).first;
-	}
-
-	return it->second;
+	// here be dragons - at least with emscripten, my Linux VM needed to reboot
+	//std::cout << "bye from " << m_name << std::endl;
 }
 
 const std::string& ThreadInfo::get_name() const
@@ -47,11 +30,20 @@ const std::string& ThreadInfo::get_name() const
 	return m_name;
 }
 
-void ThreadInfo::set_name(const std::string a_name)
+void ThreadInfo::set_name(const std::string& a_name)
 {
 	m_name = a_name;
 }
 
+// return info about the current thread using thread-local storage
+ThreadInfo& ThreadInfo::current()
+{
+	thread_local ThreadInfo t_info;
+	return t_info;
+}
+
+// give the initial thread (the one calling the static ctors)
+// a special name
 struct SMainNamer {
 	SMainNamer() {
 		ThreadInfo::current().set_name("Main");
