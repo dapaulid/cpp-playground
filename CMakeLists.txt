@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
-project(example)
+project(example VERSION 1.0.0 DESCRIPTION "example description")
+
+# emscripten
+set(CMAKE_EXECUTABLE_SUFFIX ".html")
+
+add_subdirectory(src)
+add_subdirectory(examples)
 
 # google benchmark
 set(BENCHMARK_ENABLE_INSTALL OFF)
@@ -15,7 +21,7 @@ enable_testing()
 # our stuff
 set (CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_EXECUTABLE_SUFFIX ".html")
+
 
 # add our file
 add_executable(example src/main.cpp src/threadinfo.cpp)
