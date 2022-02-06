@@ -1,16 +1,22 @@
 cmake_minimum_required(VERSION 3.0)
 project(example VERSION 1.0.0 DESCRIPTION "example description")
 
-# emscripten
-set(CMAKE_EXECUTABLE_SUFFIX ".html")
+set(PLATFORM "native" CACHE STRING "The target platform for the build")
+set_property(CACHE PLATFORM PROPERTY STRINGS native web)
+
+message(STATUS "Selected platform: ${PLATFORM}")
+
+if(PLATFORM STREQUAL "web")
+	set(CMAKE_EXECUTABLE_SUFFIX ".html")
+endif()
 
 add_subdirectory(src)
 add_subdirectory(examples)
 
 # google benchmark
-set(BENCHMARK_ENABLE_INSTALL OFF)
-set(BENCHMARK_ENABLE_TESTING OFF)
-add_subdirectory(libs/benchmark)# libs/benchmark EXCLUDE_FROM_ALL)
+#set(BENCHMARK_ENABLE_INSTALL OFF)
+#set(BENCHMARK_ENABLE_TESTING OFF)
+#add_subdirectory(libs/benchmark)# libs/benchmark EXCLUDE_FROM_ALL)
 
 # google test
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -27,11 +33,13 @@ set (CMAKE_CXX_STANDARD 11)
 add_executable(example src/main.cpp src/threadinfo.cpp)
 
 set_target_properties(example PROPERTIES OUTPUT_NAME example)
-set_target_properties(example PROPERTIES COMPILE_FLAGS "-s USE_PTHREADS")
-set_target_properties(example PROPERTIES LINK_FLAGS "--emrun -s NO_EXIT_RUNTIME -s USE_PTHREADS -s PROXY_TO_PTHREAD")
+if(PLATFORM STREQUAL "web")
+	set_target_properties(example PROPERTIES COMPILE_FLAGS "-s USE_PTHREADS")
+	set_target_properties(example PROPERTIES LINK_FLAGS "--emrun -s NO_EXIT_RUNTIME -s USE_PTHREADS -s PROXY_TO_PTHREAD")
+	target_link_libraries(example -lwebsocket)
+endif()
 
-target_link_libraries(example -lwebsocket)
-target_link_libraries(example benchmark::benchmark)
+#target_link_libraries(example benchmark::benchmark)
 
 target_link_libraries(example gtest_main)
 include(GoogleTest)
