@@ -10,38 +10,20 @@ if(PLATFORM STREQUAL "web")
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
+# include our libary
 add_subdirectory(src)
-add_subdirectory(examples)
 
-# google benchmark
-#set(BENCHMARK_ENABLE_INSTALL OFF)
-#set(BENCHMARK_ENABLE_TESTING OFF)
-#add_subdirectory(libs/benchmark)# libs/benchmark EXCLUDE_FROM_ALL)
-
-# google test
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-add_subdirectory(libs/googletest)
-enable_testing()
-
-
-# our stuff
-set (CMAKE_CXX_STANDARD 11)
-
-
-
-# add our file
-add_executable(example src/main.cpp src/threadinfo.cpp)
-
-set_target_properties(example PROPERTIES OUTPUT_NAME example)
-if(PLATFORM STREQUAL "web")
-	set_target_properties(example PROPERTIES COMPILE_FLAGS "-s USE_PTHREADS")
-	set_target_properties(example PROPERTIES LINK_FLAGS "--emrun -s NO_EXIT_RUNTIME -s USE_PTHREADS -s PROXY_TO_PTHREAD")
-	target_link_libraries(example -lwebsocket)
+# include tests (optional)
+option(PACKAGE_TESTS "Build the tests" ON)
+if(PACKAGE_TESTS)
+    enable_testing()
+    include(GoogleTest)
+	# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" # emscripten?
+    add_subdirectory(test)
 endif()
 
-#target_link_libraries(example benchmark::benchmark)
+# include examples
+add_subdirectory(examples)
 
-target_link_libraries(example gtest_main)
-include(GoogleTest)
-#gtest_discover_tests(example)   # fails on emscripten because test executable cannot be executed
+
 
