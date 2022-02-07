@@ -18,9 +18,11 @@ set_target_properties(gmock_main PROPERTIES FOLDER extern)
 macro(package_add_test TESTNAME)
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME} ${ARGN})
+	# includes for our own library
+	target_include_directories(${TESTNAME} PRIVATE ../src/api)  # TODO the way to go?
     # link the Google test infrastructure, mocking library, and a default main fuction to
     # the test executable.  Remove g_test_main if writing your own main function.
-    target_link_libraries(${TESTNAME} gtest gmock gtest_main)
+    target_link_libraries(${TESTNAME} mylibrary gtest gmock gtest_main)
     # gtest_discover_tests replaces gtest_add_tests,
     # see https://cmake.org/cmake/help/v3.10/module/GoogleTest.html for more options to pass to it
 	if(NOT PLATFORM STREQUAL "web") # TODO discovery does not work for emscripten?

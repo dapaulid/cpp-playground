@@ -9,7 +9,6 @@ case $PLATFORM in
 		;;
 
 	"web")
-		source libs/emsdk/emsdk_env.sh
 		emcmake cmake -S . -B build/$PLATFORM -DPLATFORM=$PLATFORM
 		emmake make -C build/$PLATFORM #VERBOSE=1
 		;;

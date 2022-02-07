@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -e
 
 source common.sh
 
@@ -8,8 +8,11 @@ if [[ ! $what ]]; then
 	exit 1
 fi
 
+target=$(basename ${what%.*})
+
 case $PLATFORM in
 	"native")
+		cmake --build build/$PLATFORM --target $target
 		executable="build/$PLATFORM/${what%.*}"
 		if [[ ! -f $executable ]]; then
 			echo "error: file not found: ${executable}"
@@ -19,12 +22,12 @@ case $PLATFORM in
 		;;
 
 	"web")
+		emmake make -C build/$PLATFORM $target
 		executable="build/$PLATFORM/${what%.*}.html"
 		if [[ ! -f $executable ]]; then
 			echo "error: file not found: ${executable}"
 			exit 1
 		fi	
-		source libs/emsdk/emsdk_env.sh 2> /dev/null
 		emrun --browser=chrome \
 			--browser_info --hostname=localhost --kill_exit \
 			--browser_args="--headless --remote-debugging-port=0 --disable-gpu --disable-software-rasterizer" \
