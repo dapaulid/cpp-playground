@@ -1,21 +1,16 @@
 #!/usr/bin/env bash
 
-what=$1
-platform=$2
+source common.sh
 
+what=$1
 if [[ ! $what ]]; then
 	echo "error: please specify what to run"
 	exit 1
 fi
 
-if [[ ! $platform ]]; then
-	echo "error: please specify platform: native or web"
-	exit 1
-fi
-
-case $platform in
+case $PLATFORM in
 	"native")
-		executable="build/$platform/${what%.*}"
+		executable="build/$PLATFORM/${what%.*}"
 		if [[ ! -f $executable ]]; then
 			echo "error: file not found: ${executable}"
 			exit 1
@@ -24,7 +19,7 @@ case $platform in
 		;;
 
 	"web")
-		executable="build/$platform/${what%.*}.html"
+		executable="build/$PLATFORM/${what%.*}.html"
 		if [[ ! -f $executable ]]; then
 			echo "error: file not found: ${executable}"
 			exit 1
@@ -37,7 +32,7 @@ case $platform in
 		;;
 
 	*)
-		echo "error: unsupported platform: $platform"
+		echo "error: unsupported platform: $PLATFORM"
 		exit 1
 		;;
 esac

@@ -1,26 +1,21 @@
 #!/bin/bash -e
 
-platform=$1
+source common.sh
 
-if [[ ! $platform ]]; then
-	echo "error: please specify platform: native or web"
-	exit 1
-fi
-
-case $platform in
+case $PLATFORM in
 	"native")
-		cmake -S . -B build/$platform -DPLATFORM=$platform
-		cmake --build build/$platform
+		cmake -S . -B build/$PLATFORM -DPLATFORM=$PLATFORM
+		cmake --build build/$PLATFORM
 		;;
 
 	"web")
 		source libs/emsdk/emsdk_env.sh
-		emcmake cmake -S . -B build/$platform -DPLATFORM=$platform
-		emmake make -C build/$platform #VERBOSE=1
+		emcmake cmake -S . -B build/$PLATFORM -DPLATFORM=$PLATFORM
+		emmake make -C build/$PLATFORM #VERBOSE=1
 		;;
 
 	*)
-		echo "error: unsupported platform: $platform"
+		echo "error: unsupported platform: $PLATFORM"
 		exit 1
 		;;
 esac
