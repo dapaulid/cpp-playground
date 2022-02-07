@@ -22,7 +22,7 @@ case $PLATFORM in
 		;;
 
 	"web")
-		emmake make -C build/$PLATFORM $target
+		emmake make -C build/$PLATFORM $target --no-print-directory
 		executable="build/$PLATFORM/${what%.*}.html"
 		if [[ ! -f $executable ]]; then
 			echo "error: file not found: ${executable}"
