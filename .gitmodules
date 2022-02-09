@@ -7,3 +7,6 @@
 [submodule "libs/emsdk"]
 	path = libs/emsdk
 	url = https://github.com/emscripten-core/emsdk.git
+[submodule "libs/lcov"]
+	path = libs/lcov
+	url = https://github.com/linux-test-project/lcov.git
