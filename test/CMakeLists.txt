@@ -39,4 +39,4 @@ macro(package_add_test TESTNAME)
 	endif()	
 endmacro()
 
-package_add_test(unittest unittest.cpp inplace_pimpl.test.cpp)
+package_add_test(unittest unittest.cpp inplace_pimpl.test.cpp command.test.cpp utils/copy_tracker.cpp)
