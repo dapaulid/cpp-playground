@@ -19,7 +19,7 @@ macro(package_add_test TESTNAME)
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME} ${ARGN})
 	# includes for our own library
-	target_include_directories(${TESTNAME} PRIVATE ../src/api)  # TODO the way to go?
+	target_include_directories(${TESTNAME} PRIVATE ../src)  # TODO the way to go?
     # link the Google test infrastructure, mocking library, and a default main fuction to
     # the test executable.  Remove g_test_main if writing your own main function.
     target_link_libraries(${TESTNAME} mylibrary gtest gmock gtest_main)
@@ -39,4 +39,4 @@ macro(package_add_test TESTNAME)
 	endif()	
 endmacro()
 
-package_add_test(unittest unittest.cpp)
+package_add_test(unittest unittest.cpp inplace_pimpl.test.cpp)
