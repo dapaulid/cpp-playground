@@ -35,10 +35,19 @@ cmake_submodule() {
 git --version
 cmake --version
 
-# do all submodules here
+# setup googletest
 cmake_submodule "googletest"
+
+# setup google benchmark
 cmake_submodule "benchmark" "-DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_TESTING=OFF"
 
+# setup lcov
+prepare_submodule "lcov"
+echo -e "[ ${WHITE}check${NC} ]"
+libs/lcov/bin/lcov -v
+echo -e "[ ${GREEN}done${NC} ]"
+
+# setup emscripten
 prepare_submodule "emsdk"
 echo -e "[ ${WHITE}install${NC} ]"
 libs/emsdk/emsdk install $EMSDK_VERSION

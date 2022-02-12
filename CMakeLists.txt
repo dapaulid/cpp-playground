@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 project(example VERSION 1.0.0 DESCRIPTION "example description")
 
 set(PLATFORM "native" CACHE STRING "The target platform for the build")
 set_property(CACHE PLATFORM PROPERTY STRINGS native web)
 
 message(STATUS "Selected platform: ${PLATFORM}")
+message(STATUS "Selected build type: ${CMAKE_BUILD_TYPE}")
 
 if(PLATFORM STREQUAL "web")
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")

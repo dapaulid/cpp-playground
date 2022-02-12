@@ -4,12 +4,12 @@ source common.sh
 
 case $PLATFORM in
 	"native")
-		cmake -S . -B build/$PLATFORM -DPLATFORM=$PLATFORM
+		cmake -S . -B build/$PLATFORM -DPLATFORM=$PLATFORM -DCMAKE_BUILD_TYPE=Debug   # TODO
 		cmake --build build/$PLATFORM
 		;;
 
 	"web")
-		emcmake cmake -S . -B build/$PLATFORM -DPLATFORM=$PLATFORM
+		emcmake cmake -S . -B build/$PLATFORM -DPLATFORM=$PLATFORM -DCMAKE_BUILD_TYPE=Debug   # TODO
 		emmake make -C build/$PLATFORM #VERBOSE=1
 		;;
 
