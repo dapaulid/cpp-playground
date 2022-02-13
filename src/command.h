@@ -9,9 +9,8 @@ class Command final {
         
 	template<typename F>
 	Command(F&& a_func) {
-        init(std::move(a_func));
+        init(std::forward<F>(a_func));
     }
-	
 
     // no copy constructor
     Command(const Command& other) = delete;
@@ -27,7 +26,7 @@ class Command final {
     template<typename F>
 	Command& operator=(F&& a_func) {
         reset();
-        init(std::move(a_func));
+        init(std::forward<F>(a_func));
         return *this;
     }
     // destructor    
@@ -48,7 +47,7 @@ class Command final {
         static_assert(sizeof(Wrapper<F>) <= sizeof(m_memory), 
             "function too big to store in command. did you use too many parameters?");
         // placement new
-        new (m_memory) Wrapper<F>(std::move(a_func));
+        new (m_memory) Wrapper<F>(std::forward<F>(a_func));
     }
     void init(std::nullptr_t = nullptr) {
         // placement
@@ -71,7 +70,7 @@ class Command final {
     template<typename F>
     class Wrapper final: public BaseWrapper {
     public:
-        explicit Wrapper(F&& a_func): m_func(std::move(a_func)) {
+        explicit Wrapper(F&& a_func): m_func(std::forward<F>(a_func)) {
             printf("created function wrapper of size %lu\n", sizeof(*this));
         }
         ~Wrapper() {
@@ -82,7 +81,7 @@ class Command final {
         }
         void move_to(void* a_dst) override {
             // placement new
-            ::new (a_dst) Wrapper(std::move(m_func));
+            ::new (a_dst) Wrapper(std::forward<F>(m_func));
         }
     private:
         F m_func;
