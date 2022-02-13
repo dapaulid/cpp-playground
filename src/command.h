@@ -1,6 +1,6 @@
 #include <cstddef> // std::max_align_t
 
-template<int Size = 64>
+template<int Size = 16>
 class Command final {
  public:
     Command() {
@@ -42,6 +42,7 @@ class Command final {
     BaseWrapper& wrapper() {
         return reinterpret_cast<BaseWrapper&>(m_memory);
     }
+
     template<typename F>
     void init(F&& a_func) {
         static_assert(sizeof(Wrapper<F>) <= sizeof(m_memory), 
@@ -99,5 +100,6 @@ class Command final {
 
  // private members   
  private:
-    alignas(std::max_align_t) unsigned char m_memory [Size];
+    // use void* instead of e.g. char to adapt to 32 vs 64 bit systems
+    alignas(std::max_align_t) void* m_memory [Size];
 };
